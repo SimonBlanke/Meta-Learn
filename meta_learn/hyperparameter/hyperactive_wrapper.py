@@ -22,8 +22,8 @@ class HyperactiveWrapper:
         self.collector.extract(X, y, _cand_list)
 
     def train(self):
-        self.meta_regressor = MetaRegressor(self.meta_learn_path)
-        self.meta_regressor.train_meta_regressor(self.model_list)
+        self.regressor = MetaRegressor(self.meta_learn_path)
+        self.regressor.train_meta_regressor(self.model_list)
 
     def search(self, X, y):
         self.recognizer = Recognizer(self.search_config)
