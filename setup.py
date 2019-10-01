@@ -1,11 +1,12 @@
 import setuptools
+from setuptools import find_packages
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="meta-learn",
-    version="0.1.0",
+    version="0.0.2",
     author="Simon Blanke",
     author_email="simon.blanke@yahoo.com",
     license="MIT",
@@ -13,8 +14,8 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     keywords=["machine learning", "deep learning", "optimization", "data-science"],
-    url="https://github.com/SimonBlanke/meta-learn",
-    packages=["meta_learn"],
+    url="https://github.com/SimonBlanke/Meta-Learn",
+    packages=find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -28,6 +29,4 @@ setuptools.setup(
         "Intended Audience :: Science/Research",
     ],
     install_requires=["numpy", "tqdm", "scikit-learn"],
-    test_suite="nose.collector",
-    tests_require=["nose"],
 )
