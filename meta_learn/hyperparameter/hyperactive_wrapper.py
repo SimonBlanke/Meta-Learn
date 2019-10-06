@@ -2,18 +2,22 @@ import os
 
 
 from .collector import Collector
-from .meta_regressor import MetaRegressor
-from .recognizer import Recognizer
-from .predictor import Predictor
+from ._meta_regressor import MetaRegressor
+from ._recognizer import Recognizer
+from ._predictor import Predictor
 
 
 class HyperactiveWrapper:
-    def __init__(self):
+    def __init__(self, search_config):
+        self.search_config = search_config
+
         current_path = os.path.realpath(__file__)
         meta_learn_path, _ = current_path.rsplit("/", 1)
 
         self.meta_data_path = meta_learn_path + "/meta_data/"
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
+
+        print("\nmeta_learn_path", meta_learn_path)
 
     def collect(self, X, y, _cand_list):
         self.collector = Collector(

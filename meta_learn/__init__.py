@@ -7,5 +7,6 @@ __version__ = "0.0.2"
 __license__ = "MIT"
 
 from .hyperparameter.hyperactive_wrapper import HyperactiveWrapper
+from .hyperparameter import MetaRegressor
 
-__all__ = ["HyperactiveWrapper"]
+__all__ = ["HyperactiveWrapper", "MetaRegressor"]
