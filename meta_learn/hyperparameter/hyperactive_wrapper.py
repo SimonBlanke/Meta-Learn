@@ -1,5 +1,5 @@
 import os
-
+import glob
 
 from .collector import Collector
 from ._meta_regressor import MetaRegressor
@@ -17,7 +17,15 @@ class HyperactiveWrapper:
         self.meta_data_path = meta_learn_path + "/meta_data/"
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
 
-        print("\nmeta_learn_path", meta_learn_path)
+        # print("\nmeta_learn_path", meta_learn_path)
+
+    def get_func_metadata(self, model_func):
+        self.collector = Collector(
+            self.search_config, meta_data_path=self.meta_data_path
+        )
+        paths = glob.glob(self.collector._get_func_file_paths(model_func))
+
+        return self.collector._get_func_metadata(paths)
 
     def collect(self, X, y, _cand_list):
         self.collector = Collector(
