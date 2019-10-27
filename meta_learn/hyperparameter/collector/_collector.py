@@ -4,6 +4,7 @@
 
 import inspect
 import os
+import glob
 import pandas as pd
 import hashlib
 
@@ -19,17 +20,18 @@ class Collector:
         self.n_jobs = n_jobs
         self.meta_data_path = meta_data_path
 
+        self.score_col_name = "mean_test_score"
+
         self.collector_model = ModelFeatures(self.search_config)
 
     def extract(self, X, y, _cand_list):
         self.collector_dataset = DatasetFeatures()
 
         for model_func in self.search_config.keys():
-
-            func_str = self._get_func_str(model_func)
-
             meta_data = self._get_meta_data(model_func, [X, y], _cand_list)
-            self._save_toCSV(meta_data, func_str, self._get_hash(X))
+            path = self._get_file_path(X, y, model_func)
+
+            self._save_toCSV(meta_data, path)
 
     def _get_hash(self, object):
         return hashlib.sha1(object).hexdigest()
@@ -38,8 +40,7 @@ class Collector:
         return inspect.getsource(func)
 
     def _get_meta_data(self, model_name, data_train, _cand_list):
-        X = data_train[0]
-        y = data_train[1]
+        X, y = data_train[0], data_train[1]
 
         md_model = self.collector_model.collect(model_name, X, y, _cand_list)
         md_dataset = self.collector_dataset.collect(model_name, data_train)
@@ -48,22 +49,53 @@ class Collector:
 
         return meta_data
 
-    def _save_toCSV(self, meta_data_new, func_str, data_hash):
+    def _get_func_metadata(self, paths):
+        meta_data_list = []
+        for path in paths:
+            meta_data = pd.read_csv(path)
+            meta_data_list.append(meta_data)
+
+        if len(meta_data_list) > 0:
+            meta_data = pd.concat(meta_data_list, ignore_index=True)
+
+            column_names = meta_data.columns
+            score_name = [name for name in column_names if self.score_col_name in name]
+
+            para = meta_data.drop(score_name, axis=1)
+            score = meta_data[score_name]
+
+            return para, score
+
+    def _get_func_file_paths(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_data_path + (
+            "metadata__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "*"
+            + "__.csv"
+        )
+
+    def _get_file_path(self, X_train, y_train, model_func):
+        func_str = self._get_func_str(model_func)
+        feature_hash = self._get_hash(X_train)
+        label_hash = self._get_hash(y_train)
+
+        return self.meta_data_path + (
+            "metadata__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "__feature_hash="
+            + feature_hash
+            + "__label_hash="
+            + label_hash
+            + "__.csv"
+        )
+
+    def _save_toCSV(self, meta_data_new, path):
         if not os.path.exists(self.meta_data_path):
             os.makedirs(self.meta_data_path)
 
-        print(func_str.encode("utf-8"))
-
-        file_name = (
-            "metadata_func_hash="
-            + self._get_hash(func_str.encode("utf-8"))
-            + "_data_hash="
-            + data_hash
-            + "_.csv"
-        )
-        path = self.meta_data_path + file_name
-
-        print("meta_data_new", meta_data_new)
+        # print("meta_data_new", meta_data_new)
 
         if os.path.exists(path):
             meta_data_old = pd.read_csv(path)
