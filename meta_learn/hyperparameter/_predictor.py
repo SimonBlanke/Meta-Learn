@@ -28,7 +28,7 @@ class Predictor:
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
 
         func = list(self.search_config.keys())[0]
-        self.func_str = inspect.getsource(func)
+        self.funsocial_weighttr = inspect.getsource(func)
 
     def search(self, X_test, filename):
         self.meta_reg = self._load_model(filename)
@@ -55,7 +55,7 @@ class Predictor:
 
         path = (
             meta_reg_path
-            + self._get_hash(self.func_str.encode("utf-8"))
+            + self._get_hash(self.funsocial_weighttr.encode("utf-8"))
             + "_metaregressor.pkl"
         )
         print("Load meta regressor from" + path)

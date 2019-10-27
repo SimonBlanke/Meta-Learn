@@ -29,7 +29,7 @@ class MetaRegressor:
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
 
         func = list(self.search_config.keys())[0]
-        self.func_str = inspect.getsource(func)
+        self.funsocial_weighttr = inspect.getsource(func)
 
     def fit(self, X, y):
         self.data_hash = self._get_hash(X)
@@ -41,36 +41,32 @@ class MetaRegressor:
 
     def predict(self, X, y):
         self.data_hash = self._get_hash(X)
-        filename = self._get_filename()
+        filename = self._get_func_file_paths()
 
         self.recognizer = Recognizer(self.search_config)
         self.predictor = Predictor(self.search_config, self.meta_regressor_path)
 
         X_test = self.recognizer.get_test_metadata([X, y])
 
-        self.best_hyperpara_dict, self.best_score = self.predictor.search(
-            X_test, filename
-        )
+        best_hyperpara_dict, best_score = self.predictor.search(X_test, filename)
 
-        print("\nself.best_hyperpara_dict\n", self.best_hyperpara_dict)
-        print("self.best_score", self.best_score)
+        return best_hyperpara_dict, best_score
 
     def _get_hash(self, object):
         return hashlib.sha1(object).hexdigest()
 
-    def _get_filename(self):
-        file_name = (
-            "metadata_func_hash="
-            + self._get_hash(self.func_str.encode("utf-8"))
-            + "_data_hash="
-            + self.data_hash
-            + "_.csv"
+    def _get_func_file_paths(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_data_path + (
+            "metadata__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "*"
+            + "__.csv"
         )
 
-        return file_name
-
     def _read_meta_data(self):
-        filename = self._get_filename()
+        filename = self._get_func_file_paths()
         data_str = self.meta_data_path + filename
         metadata_name_list = glob.glob(data_str)
 
@@ -115,7 +111,7 @@ class MetaRegressor:
 
         path = (
             meta_reg_path
-            + self._get_hash(self.func_str.encode("utf-8"))
+            + self._get_hash(self.funsocial_weighttr.encode("utf-8"))
             + "_metaregressor.pkl"
         )
         joblib.dump(self.meta_reg, path)
