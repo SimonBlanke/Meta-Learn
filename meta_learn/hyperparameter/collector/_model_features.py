@@ -29,7 +29,7 @@ class ModelFeatures:
 
         for _cand_ in _cand_list:
             for key in _cand_._space_.memory.keys():
-                pos = np.fromstring(key)
+                pos = np.fromstring(key, dtype=int)
                 para = _cand_._space_.pos2para(pos)
                 score = _cand_._space_.memory[key]
 
