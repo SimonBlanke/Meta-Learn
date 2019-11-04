@@ -28,22 +28,22 @@ class HyperactiveWrapper:
     def get_func_metadata(self, _cand_):
         self.collector = Collector()
         paths = glob.glob(self._get_func_file_paths(_cand_.func_))
-
-        return self.collector._get_func_metadata(paths)
+        if len(paths) > 0:
+            return self.collector._get_func_metadata(paths)
+        else:
+            return None, None
 
     def collect(self, X, y, _cand_):
         self.collector = Collector()
-        for model_func in self.search_config.keys():
-            path = self._get_file_path(X, y, _cand_.func_)
-            self.collector.extract(X, y, _cand_, path)
+        path = self._get_file_path(X, y, _cand_.func_)
+        self.collector.extract(X, y, _cand_, path)
 
     def retrain(self, _cand_):
         path = self._get_metaReg_file_path(_cand_.func_)
-
-        if not os.path.exists(path):
-            return
-
         meta_features, target = self.get_func_metadata(_cand_)
+
+        if meta_features is None or target is None:
+            return
         self.regressor = MetaRegressor()
         self.regressor.fit(meta_features, target)
         self.regressor.store_model(path)
@@ -80,22 +80,27 @@ class HyperactiveWrapper:
 
     def _get_func_file_paths(self, model_func):
         func_str = self._get_func_str(model_func)
+        self.func_path = self._get_hash(func_str.encode("utf-8")) + "/"
 
-        return self.meta_data_path + (
-            "metadata__func_hash="
-            + self._get_hash(func_str.encode("utf-8"))
-            + "*"
-            + "__.csv"
-        )
+        directory = self.meta_data_path + self.func_path
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        return directory + ("metadata" + "*" + "__.csv")
 
     def _get_file_path(self, X_train, y_train, model_func):
         func_str = self._get_func_str(model_func)
         feature_hash = self._get_hash(X_train)
         label_hash = self._get_hash(y_train)
 
-        return self.meta_data_path + (
-            "metadata__func_hash="
-            + self._get_hash(func_str.encode("utf-8"))
+        self.func_path = self._get_hash(func_str.encode("utf-8")) + "/"
+
+        directory = self.meta_data_path + self.func_path
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+        return directory + (
+            "metadata"
             + "__feature_hash="
             + feature_hash
             + "__label_hash="

@@ -49,6 +49,9 @@ class Collector:
 
             return para, score
 
+        else:
+            return None, None
+
     def _save_toCSV(self, meta_data_new, path):
         if os.path.exists(path):
             meta_data_old = pd.read_csv(path)
