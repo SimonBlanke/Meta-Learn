@@ -20,7 +20,6 @@ class MetaRegressor:
 
     def fit(self, X_train, y_train):
         self._train_regressor(X_train, y_train)
-        # self._store_model()
 
     def predict(self, X, y):
         self.recognizer = Recognizer(self.search_config)

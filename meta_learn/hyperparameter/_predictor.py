@@ -6,7 +6,6 @@ import os
 
 from sklearn.externals import joblib
 
-from .label_encoder import label_encoder_dict
 from ..data_wrangler import find_best_hyperpara
 
 
@@ -29,26 +28,3 @@ class Predictor:
         best_features, best_score = find_best_hyperpara(X_test, score_pred)
 
         return best_features, best_score
-
-    def _decode_hyperpara_dict(self, para):
-        for hyperpara_key in label_encoder_dict[self.model_str]:
-            if hyperpara_key in para:
-                inv_label_encoder_dict = {
-                    v: k
-                    for k, v in label_encoder_dict[self.model_str][
-                        hyperpara_key
-                    ].items()
-                }
-
-                encoded_values = para[hyperpara_key]
-                para[hyperpara_key] = inv_label_encoder_dict[encoded_values]
-
-        return para
-
-    def _label_enconding(self, X_train):
-        for hyperpara_key in self.para:
-            to_replace = {hyperpara_key: self.para[hyperpara_key]}
-            X_train = X_train.replace(to_replace)
-        X_train = X_train.infer_objects()
-
-        return X_train
