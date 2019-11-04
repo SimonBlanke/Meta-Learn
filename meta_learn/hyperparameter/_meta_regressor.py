@@ -17,8 +17,7 @@ from ._predictor import Predictor
 
 
 class MetaRegressor:
-    def __init__(self, search_config, meta_learn_path=None):
-        self.search_config = search_config
+    def __init__(self):
         self.meta_reg = None
         self.score_col_name = "mean_test_score"
 
@@ -28,16 +27,12 @@ class MetaRegressor:
         self.meta_data_path = meta_learn_path + "/meta_data/"
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
 
-        func = list(self.search_config.keys())[0]
-        self.funsocial_weighttr = inspect.getsource(func)
+        # func = list(self.search_config.keys())[0]
+        # self.funsocial_weighttr = inspect.getsource(func)
 
-    def fit(self, X, y):
-        self.data_hash = self._get_hash(X)
-
-        X_train, y_train = self._read_meta_data()
-
+    def fit(self, X_train, y_train):
         self._train_regressor(X_train, y_train)
-        self._store_model()
+        # self._store_model()
 
     def predict(self, X, y):
         self.data_hash = self._get_hash(X)
@@ -99,19 +94,25 @@ class MetaRegressor:
         if self.meta_reg is None:
             n_estimators = int(y_train.shape[0] / 50 + 50)
 
-            print("X_train", X_train)
-
             self.meta_reg = GradientBoostingRegressor(n_estimators=n_estimators)
             self.meta_reg.fit(X_train, y_train)
 
-    def _store_model(self):
-        meta_reg_path = self.meta_regressor_path
-        if not os.path.exists(meta_reg_path):
-            os.makedirs(meta_reg_path)
+    def _get_func_str(self, func):
+        return inspect.getsource(func)
 
-        path = (
-            meta_reg_path
-            + self._get_hash(self.funsocial_weighttr.encode("utf-8"))
-            + "_metaregressor.pkl"
+    def _get_metaReg_file_path(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_regressor_path + (
+            "metamodel__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "__.csv"
         )
+
+    def store_model(self, model_func):
+        path = self._get_metaReg_file_path(model_func)
         joblib.dump(self.meta_reg, path)
+
+    def load_model(self, model_func):
+        path = self._get_metaReg_file_path(model_func)
+        self.meta_reg = joblib.load(path)

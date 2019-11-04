@@ -6,7 +6,6 @@ import os
 import hashlib
 import inspect
 
-from pathlib import Path
 from sklearn.externals import joblib
 
 from .label_encoder import label_encoder_dict
@@ -30,8 +29,8 @@ class Predictor:
         func = list(self.search_config.keys())[0]
         self.funsocial_weighttr = inspect.getsource(func)
 
-    def search(self, X_test, filename):
-        self.meta_reg = self._load_model(filename)
+    def search(self, X_test, model_func):
+        # self._load_model(model_func)
 
         best_para, best_score = self._predict(X_test)
         return best_para, best_score
@@ -39,46 +38,30 @@ class Predictor:
     def _get_hash(self, object):
         return hashlib.sha1(object).hexdigest()
 
-    def _load_model(self, filename):
-        path = self._get_meta_regressor_path()
-
-        if Path(self.meta_regressor_path).exists():
-            reg = joblib.load(path)
-            return reg
+    def load_model(self, model_func):
+        path = self._get_metaReg_file_path(model_func)
+        if os.path.isfile(path):
+            self.meta_reg = joblib.load(path)
         else:
-            print("No proper meta regressor found\n")
+            print("File at path", path, "not found")
 
-    def _get_meta_regressor_path(self):
-        meta_reg_path = self.meta_regressor_path
-        if not os.path.exists(meta_reg_path):
-            os.makedirs(meta_reg_path)
+    def _get_func_str(self, func):
+        return inspect.getsource(func)
 
-        path = (
-            meta_reg_path
-            + self._get_hash(self.funsocial_weighttr.encode("utf-8"))
-            + "_metaregressor.pkl"
+    def _get_metaReg_file_path(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_regressor_path + (
+            "metamodel__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "__.csv"
         )
-        print("Load meta regressor from" + path)
-
-        return path
 
     def _predict(self, X_test):
         # X_test = self._label_enconding(X_test)
         # print(X_test.info())
-        print("X_test", X_test)
         score_pred = self.meta_reg.predict(X_test)
-
         best_features, best_score = find_best_hyperpara(X_test, score_pred)
-
-        """
-        list1 = list(self.search_config[str(*self.search_config.keys())].keys())
-
-        keys = list(best_features[list1].columns)
-        values = list(*best_features[list1].values)
-        best_para = dict(zip(keys, values))
-        """
-
-        # best_para = self._decode_hyperpara_dict(best_para)
 
         return best_features, best_score
 
