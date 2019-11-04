@@ -5,15 +5,12 @@
 
 import pandas as pd
 
-from importlib import import_module
-from sklearn.model_selection import cross_val_score
-
 
 class DatasetFeatures:
     def __init__(self, cv=2, n_jobs=-1):
         pass
 
-    def collect(self, model_name, data_train):
+    def collect(self, data_train):
         self.X_train = data_train[0]
         self.y_train = data_train[1]
 

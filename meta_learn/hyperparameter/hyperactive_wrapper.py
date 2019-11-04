@@ -1,5 +1,7 @@
 import os
 import glob
+import hashlib
+import inspect
 
 from .collector import Collector
 from ._meta_regressor import MetaRegressor
@@ -8,7 +10,7 @@ from ._predictor import Predictor
 
 
 class HyperactiveWrapper:
-    def __init__(self, search_config):
+    def __init__(self, search_config, meta_learn_path_alt=None):
         self.search_config = search_config
 
         current_path = os.path.realpath(__file__)
@@ -17,32 +19,86 @@ class HyperactiveWrapper:
         self.meta_data_path = meta_learn_path + "/meta_data/"
         self.meta_regressor_path = meta_learn_path + "/meta_regressor/"
 
-    def get_func_metadata(self, model_func):
-        self.collector = Collector(
-            self.search_config, meta_data_path=self.meta_data_path
-        )
-        paths = glob.glob(self.collector._get_func_file_paths(model_func))
+        if not os.path.exists(self.meta_data_path):
+            os.makedirs(self.meta_data_path)
+
+        if not os.path.exists(self.meta_regressor_path):
+            os.makedirs(self.meta_regressor_path)
+
+    def get_func_metadata(self, _cand_):
+        self.collector = Collector()
+        paths = glob.glob(self._get_func_file_paths(_cand_.func_))
 
         return self.collector._get_func_metadata(paths)
 
-    def collect(self, X, y, _cand_list):
-        self.collector = Collector(
-            self.search_config, meta_data_path=self.meta_data_path
-        )
-        self.collector.extract(X, y, _cand_list)
+    def collect(self, X, y, _cand_):
+        self.collector = Collector()
+        for model_func in self.search_config.keys():
+            path = self._get_file_path(X, y, _cand_.func_)
+            self.collector.extract(X, y, _cand_, path)
 
-    def retrain(self, model_func):
-        meta_features, target = self.get_func_metadata(model_func)
+    def retrain(self, _cand_):
+        path = self._get_metaReg_file_path(_cand_.func_)
+
+        if not os.path.exists(path):
+            return
+
+        meta_features, target = self.get_func_metadata(_cand_)
         self.regressor = MetaRegressor()
         self.regressor.fit(meta_features, target)
-        self.regressor.store_model(model_func)
+        self.regressor.store_model(path)
 
-    def search(self, X, y, model_func):
-        self.recognizer = Recognizer(self.search_config)
-        self.predictor = Predictor(self.search_config, self.meta_regressor_path)
+    def search(self, X, y, _cand_):
+        path = self._get_metaReg_file_path(_cand_.func_)
 
-        self.predictor.load_model(model_func)
+        if not os.path.exists(path):
+            return None, None
+
+        self.recognizer = Recognizer(_cand_)
+        self.predictor = Predictor()
+
+        self.predictor.load_model(path)
 
         X_test = self.recognizer.get_test_metadata([X, y])
 
-        return self.predictor.search(X_test, model_func)
+        return self.predictor.search(X_test)
+
+    def _get_hash(self, object):
+        return hashlib.sha1(object).hexdigest()
+
+    def _get_func_str(self, func):
+        return inspect.getsource(func)
+
+    def _get_metaReg_file_path(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_regressor_path + (
+            "metamodel__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "__.csv"
+        )
+
+    def _get_func_file_paths(self, model_func):
+        func_str = self._get_func_str(model_func)
+
+        return self.meta_data_path + (
+            "metadata__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "*"
+            + "__.csv"
+        )
+
+    def _get_file_path(self, X_train, y_train, model_func):
+        func_str = self._get_func_str(model_func)
+        feature_hash = self._get_hash(X_train)
+        label_hash = self._get_hash(y_train)
+
+        return self.meta_data_path + (
+            "metadata__func_hash="
+            + self._get_hash(func_str.encode("utf-8"))
+            + "__feature_hash="
+            + feature_hash
+            + "__label_hash="
+            + label_hash
+            + "__.csv"
+        )
