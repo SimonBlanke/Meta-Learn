@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="meta-learn",
-    version="0.0.4",
+    version="0.0.5",
     author="Simon Blanke",
     author_email="simon.blanke@yahoo.com",
     license="MIT",

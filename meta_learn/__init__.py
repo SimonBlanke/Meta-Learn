@@ -3,7 +3,7 @@
 # License: MIT License
 
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 __license__ = "MIT"
 
 from .hyperparameter.hyperactive_wrapper import HyperactiveWrapper
