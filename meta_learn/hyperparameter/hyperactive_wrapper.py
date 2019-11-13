@@ -25,9 +25,9 @@ class HyperactiveWrapper:
         if not os.path.exists(self.meta_regressor_path):
             os.makedirs(self.meta_regressor_path)
 
-    def get_func_metadata(self, _cand_):
+    def get_func_metadata(self, model_func):
         self.collector = Collector()
-        paths = glob.glob(self._get_func_file_paths(_cand_.func_))
+        paths = glob.glob(self._get_func_file_paths(model_func))
         if len(paths) > 0:
             return self.collector._get_func_metadata(paths)
         else:
@@ -38,9 +38,9 @@ class HyperactiveWrapper:
         path = self._get_file_path(X, y, _cand_.func_)
         self.collector.extract(X, y, _cand_, path)
 
-    def retrain(self, _cand_):
-        path = self._get_metaReg_file_path(_cand_.func_)
-        meta_features, target = self.get_func_metadata(_cand_)
+    def retrain(self, model_func):
+        path = self._get_metaReg_file_path(model_func)
+        meta_features, target = self.get_func_metadata(model_func)
 
         if meta_features is None or target is None:
             return
@@ -48,8 +48,8 @@ class HyperactiveWrapper:
         self.regressor.fit(meta_features, target)
         self.regressor.store_model(path)
 
-    def search(self, X, y, _cand_):
-        path = self._get_metaReg_file_path(_cand_.func_)
+    def search(self, X, y, model_func):
+        path = self._get_metaReg_file_path(model_func)
 
         if not os.path.exists(path):
             return None, None
