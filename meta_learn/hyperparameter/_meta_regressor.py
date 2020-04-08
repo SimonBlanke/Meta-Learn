@@ -16,7 +16,7 @@ from ._predictor import Predictor
 class MetaRegressor:
     def __init__(self):
         self.meta_reg = None
-        self.score_col_name = "mean_test_score"
+        self.score_col_name = "_score_"
 
     def fit(self, X_train, y_train):
         self._train_regressor(X_train, y_train)
@@ -35,7 +35,7 @@ class MetaRegressor:
         # scale the score -> important for comparison of meta data from datasets in meta regressor training
         scaler = MinMaxScaler()
         y_train = scaler.fit_transform(y_train)
-        y_train = pd.DataFrame(y_train, columns=["mean_test_score"])
+        y_train = pd.DataFrame(y_train, columns=["_score_"])
 
         return y_train
 

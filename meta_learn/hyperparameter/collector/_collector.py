@@ -13,7 +13,7 @@ from ._model_features import ModelFeatures
 
 class Collector:
     def __init__(self):
-        self.score_col_name = "mean_test_score"
+        self.score_col_name = "_score_"
         self.collector_model = ModelFeatures()
 
     def extract(self, X, y, _cand_, path):
@@ -58,7 +58,7 @@ class Collector:
             meta_data = meta_data_old.append(meta_data_new)
 
             columns = list(meta_data.columns)
-            noScore = ["mean_test_score", "cv_default_score"]
+            noScore = ["_score_", "cv_default_score"]
             columns_noScore = [c for c in columns if c not in noScore]
 
             meta_data = meta_data.drop_duplicates(subset=columns_noScore)

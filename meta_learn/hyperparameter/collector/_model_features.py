@@ -26,7 +26,7 @@ class ModelFeatures:
                 score_list.append(score)
 
         results_dict["params"] = para_list
-        results_dict["mean_test_score"] = score_list
+        results_dict["_score_"] = score_list
 
         return results_dict
 
@@ -37,7 +37,7 @@ class ModelFeatures:
         md_model = para_pd.reindex(sorted(para_pd.columns), axis=1)
 
         metric_pd = pd.DataFrame(
-            results_dict["mean_test_score"], columns=["mean_test_score"]
+            results_dict["_score_"], columns=["_score_"]
         )
 
         md_model = pd.concat([para_pd, metric_pd], axis=1, ignore_index=False)
