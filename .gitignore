@@ -5,6 +5,9 @@
 *.iml
 *.pkl
 *.npy
+*.json
+*.csv
+*.csv.lock~
 *.pypirc
 **/__pycache__/
 **/build/

@@ -3,10 +3,5 @@
 # License: MIT License
 
 
-__version__ = "0.0.5"
+__version__ = "0.1.0"
 __license__ = "MIT"
-
-from .hyperparameter.hyperactive_wrapper import HyperactiveWrapper
-from .hyperparameter import MetaRegressor
-
-__all__ = ["HyperactiveWrapper", "MetaRegressor"]
