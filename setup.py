@@ -29,4 +29,5 @@ setuptools.setup(
         "Intended Audience :: Science/Research",
     ],
     install_requires=["numpy", "pandas", "tqdm", "scikit-learn", "category_encoders"],
+    python_requires=">=3.5",
 )
