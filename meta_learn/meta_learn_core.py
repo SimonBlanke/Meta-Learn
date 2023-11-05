@@ -8,7 +8,7 @@ import itertools
 
 import pandas as pd
 
-from simple_data_collector import DataCollector
+from search_data_collector import SearchDataCollector
 
 from .paths import Paths
 
@@ -27,7 +27,7 @@ class MetaLearnCore:
         self.dataset_dir = self.path.get_dataset_dir(model_id, dataset_id)
 
         search_data_path = os.path.join(self.dataset_dir, "search_data.csv")
-        self.collector = DataCollector(search_data_path)
+        self.collector = SearchDataCollector(search_data_path)
         self.dataset_features_path = os.path.join(
             self.dataset_dir, "dataset_features.json"
         )
