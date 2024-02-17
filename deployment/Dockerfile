@@ -7,6 +7,6 @@ COPY ../requirements.txt /app/
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
 
 COPY path2meta_regressor /app/
-COPY ./api.py /app/
+COPY ./service /app/
 
-CMD ["uvicorn", "api:app", "--host", "0.0.0.0", "--port", "80"]
+CMD ["python", "./service/main.py"]
