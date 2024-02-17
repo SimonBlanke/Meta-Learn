@@ -2,29 +2,23 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-
+import joblib
 from fastapi import FastAPI
 from argparse import ArgumentParser
 
 from .dto import InferenceDTO, PredictionDTO
 
-from .importer import MetaRegressorImporter
 from meta_learn.tabular.regression import MetaLearn
 
 
 parser = ArgumentParser(description="Meta-Regressor arguments")
 parser.add_argument(
-    "-dataset_type", type=str, default=None, help="Dataset type (e.g. 'tabular')"
-)
-parser.add_argument(
-    "-model_type", type=str, default=None, help="Model type (e.g. 'regression')"
-)
-parser.add_argument(
-    "-model_name",
+    "-path2model",
     type=str,
     default=None,
-    help="Model name (e.g. 'decision_tree_classifier')",
+    help="Path 2 meta-regressor model (.joblib)",
 )
+
 
 app = FastAPI(title="Meta-Learn")
 
@@ -32,10 +26,7 @@ app = FastAPI(title="Meta-Learn")
 @app.on_event("startup")
 def load_model():
     args = parser.parse_args()
-    MetaRegressor = MetaRegressorImporter(
-        args.dataset_type, args.model_type
-    ).meta_regressor
-    app.model = MetaRegressor().load(args.model_name + ".joblib")
+    app.model = joblib.load(args.path2model)
 
 
 @app.post("/predict", response_model=PredictionDTO)
