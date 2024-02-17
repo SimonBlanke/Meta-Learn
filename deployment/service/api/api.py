@@ -14,15 +14,15 @@ from meta_learn.tabular.regression import MetaLearn
 
 parser = ArgumentParser(description="Meta-Regressor arguments")
 parser.add_argument(
-    "-dataset_type", type=str, default=1, help="Dataset type (e.g. 'tabular')"
+    "-dataset_type", type=str, default=None, help="Dataset type (e.g. 'tabular')"
 )
 parser.add_argument(
-    "-model_type", type=str, default=1, help="Model type (e.g. 'regression')"
+    "-model_type", type=str, default=None, help="Model type (e.g. 'regression')"
 )
 parser.add_argument(
     "-model_name",
     type=str,
-    default=1,
+    default=None,
     help="Model name (e.g. 'decision_tree_classifier')",
 )
 
