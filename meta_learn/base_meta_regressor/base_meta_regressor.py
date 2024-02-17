@@ -12,7 +12,7 @@ from sklearn.utils.validation import check_is_fitted
 
 
 class BaseMetaRegressor:
-    base_path = "pretrained_meta_regressors"
+    base_path = os.path.join("..", "pretrained_meta_regressors")
 
     def __init__(self, regressor, encoder):
         self.regressor = regressor
@@ -29,7 +29,10 @@ class BaseMetaRegressor:
             self.m_reg = regressor
 
     def generate_path(self, model):
-        return os.path.join(self.base_path, self.dataset_type, self.model_type, model)
+        path = os.path.join(self.base_path, self.dataset_type, self.model_type, model)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
     def dump(self, model):
         path = self.generate_path(model)
