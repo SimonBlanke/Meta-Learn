@@ -2,16 +2,18 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-
 import pandas as pd
 
+from joblib import load, dump
 from sklearn.ensemble import GradientBoostingRegressor
 from category_encoders import OrdinalEncoder
 from sklearn.utils.validation import check_is_fitted
 
 
-class MetaRegressor:
-    def __init__(self, regressor="default", encoder="default"):
+class BaseMetaRegressor:
+    base_path = "pretrained_meta_regressors"
+
+    def __init__(self, regressor, encoder):
         self.regressor = regressor
         self.encoder = encoder
 
@@ -24,6 +26,12 @@ class MetaRegressor:
             self.m_reg = GradientBoostingRegressor()
         else:
             self.m_reg = regressor
+
+    def dump(self, path):
+        dump(self.regressor, path)
+
+    def load(self, path):
+        return load(path)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
         X_numeric = X_meta.apply(
