@@ -30,4 +30,5 @@ setuptools.setup(
     ],
     install_requires=open("./requirements.txt").readlines(),
     python_requires=">=3.5",
+    include_package_data=True,
 )
