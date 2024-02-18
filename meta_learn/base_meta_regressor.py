@@ -40,13 +40,15 @@ class BaseMetaRegressor:
 
     def dump(self, model):
         path = self.generate_path(model)
-        dump(self.regressor, path)
+        dump(self, path)
 
     def load(self, model):
         path = self.generate_path(model)
         return load(path)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
+        self.feature_types = X_meta.dtypes.astype(str).to_dict()
+
         X_numeric = X_meta.apply(
             lambda s: pd.to_numeric(s, errors="coerce").notnull().all()
         )
