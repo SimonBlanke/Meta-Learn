@@ -6,7 +6,7 @@ import joblib
 from fastapi import FastAPI
 from argparse import ArgumentParser
 
-from .dto import InferenceDTO, PredictionDTO
+from .dto import InferenceDTO, PredictionDTO, FeatureTypes
 
 from meta_learn.tabular.regression import MetaLearn
 
@@ -19,7 +19,6 @@ parser.add_argument(
     help="Path 2 meta-regressor model (.joblib)",
 )
 
-
 app = FastAPI(title="Meta-Learn")
 
 
@@ -27,6 +26,11 @@ app = FastAPI(title="Meta-Learn")
 def load_model():
     args = parser.parse_args()
     app.model = joblib.load(args.path2model)
+
+
+@app.post("/feature_types")
+def predict():
+    return FeatureTypes(feature_types=app.model.feature_types)
 
 
 @app.post("/predict", response_model=PredictionDTO)

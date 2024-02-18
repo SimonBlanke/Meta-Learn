@@ -14,3 +14,7 @@ class InferenceDTO(BaseModel):
 
 class PredictionDTO(BaseModel):
     approx_scores: list
+
+
+class FeatureTypes(BaseModel):
+    feature_types: dict
