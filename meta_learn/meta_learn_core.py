@@ -4,6 +4,7 @@
 
 import os
 import json
+import shutil
 import itertools
 
 import pandas as pd
@@ -18,6 +19,16 @@ class MetaLearnCore:
         self.path = Paths(path)
 
         self.dataset_feature_generator = None
+
+    def remove(self, model_id=None, dataset_id=None):
+        if model_id and dataset_id:
+            shutil.rmtree(self.path.get_dataset_dir(model_id, dataset_id))
+        elif model_id:
+            shutil.rmtree(self.path.get_model_dir(model_id))
+        elif not model_id and not dataset_id:
+            shutil.rmtree(self.path.base_path_name)
+        else:
+            raise ValueError
 
     def collect(self, X, y, model_id, dataset_id):
         print("\n collect")
