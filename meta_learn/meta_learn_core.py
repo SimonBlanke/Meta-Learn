@@ -32,7 +32,7 @@ class MetaLearnCore:
             self.dataset_dir, "dataset_features.json"
         )
 
-        ref_scores = self.dataset_feature_generator(X, y)
+        ref_scores = self.dataset_feature_generator.create(X, y)
 
         with open(self.dataset_features_path, "w") as f:
             json.dump(ref_scores, f)
@@ -65,7 +65,7 @@ class MetaLearnCore:
 
         all_parameters = pd.DataFrame(permutations_dicts)
 
-        ref_scores = self.dataset_feature_generator(X, y)
+        ref_scores = self.dataset_feature_generator.create(X, y)
         meta_data_test = all_parameters.assign(**ref_scores)
 
         print("create", len(all_parameters), "samples")
