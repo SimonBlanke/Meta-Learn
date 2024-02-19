@@ -89,3 +89,5 @@ def test_integration():
     os.remove("meta_regressor.joblib")
 
     gbr_.predict(meta_data_X_test)
+
+    meta_learn.remove()
