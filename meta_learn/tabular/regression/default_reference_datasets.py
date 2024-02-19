@@ -40,6 +40,9 @@ def dataset_feature_generator(X, y):
     for model_name in ref_models.keys():
         ref_scores[model_name] = ref_models[model_name](X, y)
 
+    ref_scores["n_samples"] = X.shape[0]
+    ref_scores["n_features"] = X.shape[1]
+
     print("Dataset features generated    ")
 
     # print("\n ref_scores \n", ref_scores, "\n")
