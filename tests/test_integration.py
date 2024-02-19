@@ -3,6 +3,7 @@
 # License: MIT License
 
 import os
+import joblib
 
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
@@ -82,4 +83,9 @@ def test_integration():
 
     gbr = MetaRegressor()
     gbr.fit(meta_X, meta_y)
-    gbr.predict(meta_data_X_test)
+
+    joblib.dump(gbr, "meta_regressor.joblib")
+    gbr_ = joblib.load("meta_regressor.joblib")
+    os.remove("meta_regressor.joblib")
+
+    gbr_.predict(meta_data_X_test)
