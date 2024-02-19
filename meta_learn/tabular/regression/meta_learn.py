@@ -3,7 +3,7 @@
 # License: MIT License
 
 
-from .default_reference_datasets import ref_models
+from .default_reference_models import ref_models
 from ..dataset_feature_generator import DatasetFeatureGenerator
 from ...meta_learn_core import MetaLearnCore
 
