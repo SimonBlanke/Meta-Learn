@@ -17,12 +17,12 @@ def reg_ref_model(X, y):
 
 
 def dtr_ref_model(X, y):
-    dtr = DecisionTreeRegressor()
+    dtr = DecisionTreeRegressor(max_depth=None)
     return cross_val_score(dtr, X, y, cv=5).mean()
 
 
 def gbr_ref_model(X, y):
-    gbr = GradientBoostingRegressor()
+    gbr = GradientBoostingRegressor(n_estimators=100, max_depth=3)
     return cross_val_score(gbr, X, y, cv=5).mean()
 
 
