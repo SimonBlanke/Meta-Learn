@@ -4,12 +4,17 @@
 
 from sklearn.datasets import make_classification
 
-from ...synthetic_data import BaseSyntheticDataGenerator
+from ....synthetic_data_generator import BaseSyntheticDataGenerator
+from ..meta_learn import MetaLearn
+from .synthetic_data_parameters import dataset_dict
 
 
 class SyntheticDataGenerator(BaseSyntheticDataGenerator):
     def __init__(self, base_path=".") -> None:
         super().__init__(base_path)
+
+        self.meta_learn = MetaLearn(base_path)
+        self.dataset_dict = dataset_dict
 
     def generate(self, dataset_para):
         return make_classification(**dataset_para)
