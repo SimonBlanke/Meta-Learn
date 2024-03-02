@@ -12,20 +12,14 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
 
-def reg_ref_model(X, y):
-    reg = LogisticRegression()
-    reg.fit(X, y)
-    return reg.score(X, y)
-
-
 def svm_ref_model(X, y):
     svr = SVR()
     return cross_val_score(svr, X, y, cv=5).mean()
 
 
-def mlp_ref_model(X, y):
-    mlp = MLPRegressor()
-    return cross_val_score(mlp, X, y, cv=5).mean()
+def dtr_ref_model_short(X, y):
+    dtr = DecisionTreeClassifier(max_depth=3)
+    return cross_val_score(dtr, X, y, cv=5).mean()
 
 
 def dtr_ref_model(X, y):
@@ -33,15 +27,20 @@ def dtr_ref_model(X, y):
     return cross_val_score(dtr, X, y, cv=5).mean()
 
 
-def gbr_ref_model(X, y):
+def gbr_ref_model_25(X, y):
+    gbr = GradientBoostingClassifier(n_estimators=25, max_depth=3)
+    return cross_val_score(gbr, X, y, cv=5).mean()
+
+
+def gbr_ref_model_100(X, y):
     gbr = GradientBoostingClassifier(n_estimators=100, max_depth=3)
     return cross_val_score(gbr, X, y, cv=5).mean()
 
 
 ref_models = {
-    "reg": reg_ref_model,
     "svm": svm_ref_model,
-    "mlp": mlp_ref_model,
+    "dtr5": dtr_ref_model_short,
     "dtr": dtr_ref_model,
-    "gbr": gbr_ref_model,
+    "gbr25": gbr_ref_model_25,
+    "gbr100": gbr_ref_model_100,
 }
