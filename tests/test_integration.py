@@ -10,9 +10,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.datasets import load_breast_cancer
 
 
-from meta_learn.synthetic_data import SyntheticDataGenerator
-from meta_learn.tabular.regression.meta_learn import MetaLearn
-from meta_learn.tabular.regression import MetaRegressor
+from meta_learn.tabular.classification.synthetic_data import SyntheticDataGenerator
+from meta_learn.tabular.classification.meta_learn import MetaLearn
+from meta_learn.tabular.classification import MetaRegressor
 
 
 dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
@@ -43,28 +43,27 @@ dataset_dict = {
     "test_dataset_0": {
         "n_samples": 300,
         "n_features": 10,
-        "n_informative": 4,
+        "n_informative": 6,
         "class_sep": 0.9,
         "n_classes": 3,
         "flip_y": 0.3,
     },
     "test_dataset_1": {
-        "n_samples": 500,
+        "n_samples": 1000,
         "n_features": 12,
-        "n_informative": 8,
+        "n_informative": 7,
         "n_redundant": 3,
         "class_sep": 1.0,
         "n_clusters_per_class": 3,
         "flip_y": 0.1,
     },
     "test_dataset_2": {
-        "n_samples": 1000,
-        "n_features": 14,
-        "n_informative": 5,
-        "n_redundant": 4,
-        "n_repeated": 2,
-        "class_sep": 0.5,
-        "n_classes": 4,
+        "n_samples": 3000,
+        "n_features": 18,
+        "n_informative": 12,
+        "n_redundant": 1,
+        "n_repeated": 1,
+        "class_sep": 2,
         "flip_y": 0.1,
     },
 }
@@ -90,4 +89,4 @@ def test_integration():
 
     gbr_.predict(meta_data_X_test)
 
-    meta_learn.remove()
+    # meta_learn.remove()

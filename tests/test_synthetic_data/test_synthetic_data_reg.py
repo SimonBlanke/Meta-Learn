@@ -5,9 +5,9 @@
 import os
 
 from sklearn.model_selection import cross_val_score
-from sklearn.tree import DecisionTreeClassifier
+from sklearn.tree import DecisionTreeRegressor
 
-from meta_learn.tabular.regression import SyntheticDataGenerator
+from meta_learn.tabular.regression.synthetic_data import SyntheticDataGenerator
 
 dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
@@ -16,7 +16,7 @@ def dtc_function(opt):
     X = opt.pass_through["X"]
     y = opt.pass_through["y"]
 
-    dtc_model = DecisionTreeClassifier(
+    dtc_model = DecisionTreeRegressor(
         max_depth=opt["max_depth"],
         min_samples_split=opt["min_samples_split"],
         min_samples_leaf=opt["min_samples_leaf"],
@@ -35,28 +35,19 @@ dataset_dict = {
         "n_samples": 300,
         "n_features": 10,
         "n_informative": 4,
-        "class_sep": 0.9,
-        "n_classes": 3,
-        "flip_y": 0.3,
+        "noise": 0.01,
     },
     "test_dataset_1": {
         "n_samples": 500,
         "n_features": 12,
         "n_informative": 8,
-        "n_redundant": 3,
-        "class_sep": 1.0,
-        "n_clusters_per_class": 3,
-        "flip_y": 0.1,
+        "noise": 0.03,
     },
     "test_dataset_2": {
         "n_samples": 1000,
         "n_features": 14,
         "n_informative": 5,
-        "n_redundant": 4,
-        "n_repeated": 2,
-        "class_sep": 0.5,
-        "n_classes": 4,
-        "flip_y": 0.1,
+        "noise": 0.08,
     },
 }
 
