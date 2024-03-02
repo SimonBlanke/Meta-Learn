@@ -5,13 +5,13 @@
 
 from sklearn.model_selection import cross_val_score
 
-from sklearn.svm import SVR
+from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
 
 def svm_ref_model(X, y):
-    svr = SVR()
+    svr = SVC()
     return cross_val_score(svr, X, y, cv=5).mean()
 
 
