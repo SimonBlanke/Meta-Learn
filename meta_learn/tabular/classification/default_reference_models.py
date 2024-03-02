@@ -5,9 +5,7 @@
 
 from sklearn.model_selection import cross_val_score
 
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVR
-from sklearn.neural_network import MLPRegressor
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 
