@@ -2,21 +2,16 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-from sklearn.datasets import make_classification, make_regression
-
 from hyperactive import Hyperactive
 
 from .synthetic_data_parameters import dataset_dict
 from ..tabular.regression.meta_learn import MetaLearn
 
 
-class SyntheticDataGenerator:
+class BaseSyntheticDataGenerator:
     def __init__(self, base_path=".") -> None:
         self.meta_learn = MetaLearn(base_path)
         self.dataset_dict = dataset_dict
-
-    def generate(self, dataset_para):
-        return make_classification(**dataset_para)
 
     def collect(self, objective_function, search_space, model_id, n_iter, n_jobs=1):
         for dataset_id in self.dataset_dict.keys():

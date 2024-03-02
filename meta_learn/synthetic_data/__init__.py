@@ -3,4 +3,4 @@
 # License: MIT License
 
 
-from .synthetic_data_generator import SyntheticDataGenerator
+from .synthetic_data_generator import BaseSyntheticDataGenerator
