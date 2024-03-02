@@ -10,7 +10,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.datasets import load_breast_cancer
 
 
-from meta_learn.synthetic_data import SyntheticDataGenerator
+from meta_learn.tabular.regression import SyntheticDataGenerator
 from meta_learn.tabular.regression.meta_learn import MetaLearn
 from meta_learn.tabular.regression import MetaRegressor
 

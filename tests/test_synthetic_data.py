@@ -7,7 +7,7 @@ import os
 from sklearn.model_selection import cross_val_score
 from sklearn.tree import DecisionTreeClassifier
 
-from meta_learn.synthetic_data import SyntheticDataGenerator
+from meta_learn.tabular.regression import SyntheticDataGenerator
 
 dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
