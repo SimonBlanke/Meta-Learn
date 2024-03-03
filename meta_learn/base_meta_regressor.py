@@ -8,7 +8,6 @@ import pandas as pd
 from joblib import load, dump
 from sklearn.ensemble import GradientBoostingRegressor
 from category_encoders import OrdinalEncoder
-from sklearn.utils.validation import check_is_fitted
 
 
 class BaseMetaRegressor:
