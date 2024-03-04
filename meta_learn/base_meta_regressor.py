@@ -21,13 +21,17 @@ class BaseMetaRegressor:
         else:
             self.m_reg = regressor
 
-    def generate_path(self, model):
-        path_dir = os.path.abspath(
+        self.generate_model_path()
+
+    def generate_model_path(self):
+        self.path_dir = os.path.abspath(
             os.path.join(self.base_path, self.dataset_type, self.model_type)
         )
-        if not os.path.exists(path_dir):
-            os.makedirs(path_dir)
-        path_file = os.path.join(path_dir, model)
+        if not os.path.exists(self.path_dir):
+            os.makedirs(self.path_dir)
+
+    def generate_path(self, model):
+        path_file = os.path.join(self.path_dir, model)
         return path_file
 
     def dump(self, objective_function):
@@ -37,6 +41,10 @@ class BaseMetaRegressor:
     def load(self, objective_function):
         path = self.generate_path(objective_function.__name__)
         self.m_reg = load(path)
+
+    def get_objective_function_names(self):
+        paths_l = os.listdir(self.path_dir)
+        return [path.split(".joblib")[0] for path in paths_l]
 
     def remove_confirmed(self, objective_function):
         path = self.generate_path(objective_function.__name__)
