@@ -30,15 +30,13 @@ class BaseMetaRegressor:
 
     def dump(self, objective_function):
         path = self.generate_path(objective_function.__name__)
-        dump(self, path)
+        dump(self.m_reg, path)
 
     def load(self, objective_function):
         path = self.generate_path(objective_function.__name__)
-        return load(path)
+        self.m_reg = load(path)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
-        self.feature_types = X_meta.dtypes.astype(str).to_dict()
-
         if drop_duplicates:
             X_meta = X_meta.drop_duplicates()
             y_meta = y_meta.iloc[X_meta.index]
