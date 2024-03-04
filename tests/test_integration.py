@@ -18,7 +18,7 @@ from meta_learn.tabular.classification import MetaRegressor
 dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
 
 data = load_breast_cancer()
-X_inf, y_inf = data.data, data.target
+X_inference, y_inference = data.data, data.target
 
 
 def dtc_function(opt):
@@ -78,15 +78,17 @@ def test_integration():
 
     meta_learn = MetaLearn(dir_path)
     meta_X, meta_y = meta_learn.get_meta_data(model_id)
-    meta_data_X_test = meta_learn.get_meta_data_X(search_space, X_inf, y_inf)
+    meta_data_X_test = meta_learn.get_meta_data_X(
+        search_space, X_inference, y_inference
+    )
 
     gbr = MetaRegressor()
     gbr.fit(meta_X, meta_y)
+    gbr.dump(dtc_function)
 
-    joblib.dump(gbr, "meta_regressor.joblib")
-    gbr_ = joblib.load("meta_regressor.joblib")
-    os.remove("meta_regressor.joblib")
+    gbr_load = MetaRegressor()
+    gbr_load.load(dtc_function)
+    gbr_load.predict(meta_data_X_test)
+    gbr_load.remove(dtc_function, always_confirm=True)
 
-    gbr_.predict(meta_data_X_test)
-
-    # meta_learn.remove()
+    meta_learn.remove()
