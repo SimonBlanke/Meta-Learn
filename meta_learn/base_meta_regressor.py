@@ -3,25 +3,16 @@
 # License: MIT License
 
 import os
-import pandas as pd
-
 from joblib import load, dump
 from sklearn.ensemble import GradientBoostingRegressor
-from category_encoders import OrdinalEncoder
 
 
 class BaseMetaRegressor:
     dir_path = os.path.dirname(os.path.realpath(__file__))
     base_path = os.path.join(dir_path, "pretrained_meta_regressors")
 
-    def __init__(self, regressor, encoder):
+    def __init__(self, regressor):
         self.regressor = regressor
-        self.encoder = encoder
-
-        if encoder == "default":
-            self.enc = OrdinalEncoder()
-        else:
-            self.enc = encoder
 
         if regressor == "default":
             self.m_reg = GradientBoostingRegressor()
@@ -37,27 +28,16 @@ class BaseMetaRegressor:
         path_file = os.path.join(path_dir, model)
         return path_file
 
-    def dump(self, model):
-        path = self.generate_path(model)
+    def dump(self, objective_function):
+        path = self.generate_path(objective_function.__name__)
         dump(self, path)
 
-    def load(self, model):
-        path = self.generate_path(model)
+    def load(self, objective_function):
+        path = self.generate_path(objective_function.__name__)
         return load(path)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
         self.feature_types = X_meta.dtypes.astype(str).to_dict()
-
-        X_numeric = X_meta.apply(
-            lambda s: pd.to_numeric(s, errors="coerce").notnull().all()
-        )
-
-        if not X_numeric.all():
-            print("\n encode")
-            self.enc.fit(X_meta)
-            X_meta = self.enc.transform(X_meta)
-        else:
-            self.encoder = False
 
         if drop_duplicates:
             X_meta = X_meta.drop_duplicates()
@@ -66,11 +46,4 @@ class BaseMetaRegressor:
         self.m_reg.fit(X_meta, y_meta)
 
     def predict(self, X):
-        if self.encoder:
-            X = self.enc.transform(X)
-            X_pred = self.m_reg.predict(X)
-            X_pred = self.enc.inverse_transform(X_pred)
-        else:
-            X_pred = self.m_reg.predict(X)
-
-        return X_pred
+        return self.m_reg.predict(X)

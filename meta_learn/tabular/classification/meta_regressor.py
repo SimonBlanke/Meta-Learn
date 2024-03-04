@@ -9,5 +9,5 @@ class MetaRegressor(BaseMetaRegressor):
     dataset_type = "tabular"
     model_type = "classification"
 
-    def __init__(self, regressor="default", encoder="default"):
-        super().__init__(regressor, encoder)
+    def __init__(self, regressor="default"):
+        super().__init__(regressor)
