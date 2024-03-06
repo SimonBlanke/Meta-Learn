@@ -2,6 +2,9 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
+from meta_learn.tabular.regression import MetaRegressor
+
 
 def test_meta_regressor():
-    pass
+    meta_reg = MetaRegressor()
+    print(meta_reg.get_objective_function_names())
