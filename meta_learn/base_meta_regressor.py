@@ -21,42 +21,42 @@ class BaseMetaRegressor:
         else:
             self.m_reg = regressor
 
-        self.generate_model_path()
+        self._generate_model_path()
 
-    def generate_model_path(self):
+    def _generate_model_path(self):
         self.path_dir = os.path.abspath(
             os.path.join(self.base_path, self.dataset_type, self.model_type)
         )
         if not os.path.exists(self.path_dir):
             os.makedirs(self.path_dir)
 
-    def generate_path(self, model):
+    def _generate_path(self, model):
         path_file = os.path.join(self.path_dir, model)
         return path_file
 
     def dump(self, objective_function):
-        path = self.generate_path(objective_function.__name__)
+        path = self._generate_path(objective_function.__name__)
         dump(self.m_reg, path)
 
     def load(self, objective_function):
-        path = self.generate_path(objective_function.__name__)
+        path = self._generate_path(objective_function.__name__)
         self.m_reg = load(path)
 
     def get_objective_function_names(self):
         paths_l = os.listdir(self.path_dir)
         return [path.split(".joblib")[0] for path in paths_l]
 
-    def remove_confirmed(self, objective_function):
-        path = self.generate_path(objective_function.__name__)
+    def _remove_confirmed(self, objective_function):
+        path = self._generate_path(objective_function.__name__)
         os.remove(path)
 
     def remove(self, objective_function, always_confirm=False):
         if always_confirm:
-            self.remove_confirmed(objective_function)
+            self._remove_confirmed(objective_function)
         else:
             question = "Remove pretrained meta regressor?"
             if query_yes_no(question):
-                self.remove_confirmed(objective_function)
+                self._remove_confirmed(objective_function)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
         if drop_duplicates:
