@@ -3,10 +3,12 @@
 # License: MIT License
 
 import os
+import shutil
 
-from types import List
+from typing import List
 
 from .paths import Paths
+from .utils import query_yes_no
 
 
 class SyntheticMetaDataPaths(Paths):
@@ -16,6 +18,30 @@ class SyntheticMetaDataPaths(Paths):
     synthetic_meta_data_base_path: str = os.path.join(
         Paths.pkg_data, "synthetic_meta_data"
     )
+
+    def remove(self, model_id=None, dataset_id=None, always_confirm=False):
+        if always_confirm:
+            self._remove_confirmed(model_id, dataset_id)
+        else:
+            question = "Remove synthetic meta data?"
+            if query_yes_no(question):
+                self._remove_confirmed(model_id, dataset_id)
+
+    def _remove_confirmed(cls, model_id, dataset_id):
+        if model_id and dataset_id:
+            shutil.rmtree(cls.dataset(model_id, dataset_id))
+        elif model_id:
+            shutil.rmtree(cls.model(model_id))
+        elif not model_id and not dataset_id:
+            shutil.rmtree(cls.synthetic_meta_data_base_path)
+        else:
+            raise ValueError
+
+    def dataset(cls, model_id, dataset_id):
+        return os.path.join(cls.model(model_id), dataset_id)
+
+    def model(cls, model_id):
+        return os.path.join(cls.synthetic_meta_data_base_path, model_id)
 
     def dataset_ids(cls, model_id: str) -> List[str]:
         model_path = os.path.join(cls.synthetic_meta_data_base_path, model_id)

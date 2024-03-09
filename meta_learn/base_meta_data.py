@@ -2,8 +2,6 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-import os
-import shutil
 import itertools
 from typing import Tuple
 
@@ -21,16 +19,6 @@ class BaseMetaData:
         self.path = Paths(path)
 
         self.dataset_feature_generator = None
-
-    def remove(self, model_id=None, dataset_id=None):
-        if model_id and dataset_id:
-            shutil.rmtree(self.path.get_dataset_dir(model_id, dataset_id))
-        elif model_id:
-            shutil.rmtree(self.path.get_model_dir(model_id))
-        elif not model_id and not dataset_id:
-            shutil.rmtree(self.path.base_path_name)
-        else:
-            raise ValueError
 
     def collect(self, X, y, model_id, dataset_id):
         search_data = SearchData(model_id, dataset_id)
