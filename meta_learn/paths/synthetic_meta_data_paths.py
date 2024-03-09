@@ -4,6 +4,8 @@
 
 import os
 
+from types import List
+
 from .paths import Paths
 
 
@@ -14,6 +16,10 @@ class SyntheticMetaDataPaths(Paths):
     synthetic_meta_data_base_path: str = os.path.join(
         Paths.pkg_data, "synthetic_meta_data"
     )
+
+    def dataset_ids(cls, model_id: str) -> List[str]:
+        model_path = os.path.join(cls.synthetic_meta_data_base_path, model_id)
+        return [name for name in os.listdir(model_path)]
 
     def model_dataset(cls, model_id, dataset_id):
         return os.path.join(cls.synthetic_meta_data_base_path, model_id, dataset_id)
