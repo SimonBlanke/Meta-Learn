@@ -3,9 +3,9 @@
 # License: MIT License
 
 import os
-import json
 import shutil
 import itertools
+from typing import Tuple
 
 import pandas as pd
 
@@ -14,7 +14,7 @@ from search_data_collector import SearchDataCollector
 from .paths import Paths
 
 
-class MetaLearnCore:
+class BasesMetaData:
     def __init__(self, path):
         self.path = Paths(path)
 
@@ -82,9 +82,7 @@ class MetaLearnCore:
         print("create", len(all_parameters), "samples")
         return meta_data_test
 
-    def get_meta_data(self, model_id):
-        print("\n get_meta_data")
-
+    def get_meta_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
         model_dir = self.path.get_model_dir(model_id)
         dataset_id_l = [name for name in os.listdir(model_dir)]
 

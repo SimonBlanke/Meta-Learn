@@ -3,6 +3,5 @@
 # License: MIT License
 
 
-from .meta_learn import MetaLearn
+from .meta_data import MetaData
 from .meta_regressor import MetaRegressor
-
