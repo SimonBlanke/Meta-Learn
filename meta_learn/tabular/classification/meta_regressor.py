@@ -3,11 +3,9 @@
 # License: MIT License
 
 from ...base_meta_regressor import BaseMetaRegressor
+from .model_and_dataset_type import ModelAndDatasetType
 
 
-class MetaRegressor(BaseMetaRegressor):
-    dataset_type = "tabular"
-    model_type = "classification"
-
+class MetaRegressor(BaseMetaRegressor, ModelAndDatasetType):
     def __init__(self, regressor="default"):
         super().__init__(regressor)
