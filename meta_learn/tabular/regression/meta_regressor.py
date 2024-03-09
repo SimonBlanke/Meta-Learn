@@ -7,5 +7,5 @@ from .model_and_dataset_type import ModelAndDatasetType
 
 
 class MetaRegressor(BaseMetaRegressor, ModelAndDatasetType):
-    def __init__(self, regressor="default"):
-        super().__init__(regressor)
+    def __init__(self, regressor="default", base_path=None):
+        super().__init__(regressor, base_path)
