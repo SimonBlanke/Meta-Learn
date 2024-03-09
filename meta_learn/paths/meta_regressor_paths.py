@@ -4,7 +4,6 @@
 
 import os
 
-
 from .paths import Paths
 
 
