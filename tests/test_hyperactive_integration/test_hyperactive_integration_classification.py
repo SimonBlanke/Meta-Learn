@@ -11,7 +11,7 @@ from sklearn.datasets import load_breast_cancer
 
 
 from meta_learn.tabular.classification.synthetic_data import SyntheticDataGenerator
-from meta_learn.tabular.classification.meta_learn import MetaLearn
+from meta_learn.tabular.classification.meta_data import MetaData
 from meta_learn.tabular.classification import MetaRegressor
 
 
