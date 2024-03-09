@@ -7,53 +7,52 @@ from joblib import load, dump
 from sklearn.ensemble import GradientBoostingRegressor
 
 from .utils import query_yes_no
+from .paths import MetaRegressorPaths
 
 
 class BaseMetaRegressor:
-    def __init__(self, regressor):
+    def __init__(self, regressor, base_path):
         self.regressor = regressor
+        self.base_path = base_path
 
         if regressor == "default":
             self.m_reg = GradientBoostingRegressor()
         else:
             self.m_reg = regressor
 
-        self._generate_model_path()
-
-    def _generate_model_path(self):
-        self.path_dir = os.path.abspath(
-            os.path.join(self.base_path, self.dataset_type, self.model_type)
-        )
-        if not os.path.exists(self.path_dir):
-            os.makedirs(self.path_dir)
-
     def _generate_path(self, model):
         path_file = os.path.join(self.path_dir, model)
         return path_file
 
-    def dump(self, objective_function):
-        path = self._generate_path(objective_function.__name__)
-        dump(self.m_reg, path)
+    def dump(self, model_id):
+        dump(
+            self.m_reg,
+            MetaRegressorPaths(self.base_path).model(
+                self.dataset_type, self.model_type, model_id
+            ),
+        )
 
-    def load(self, objective_function):
-        path = self._generate_path(objective_function.__name__)
-        self.m_reg = load(path)
+    def load(self, model_id):
+        self.m_reg = load(
+            MetaRegressorPaths(self.base_path).model(
+                self.dataset_type, self.model_type, model_id
+            )
+        )
 
-    def get_objective_function_names(self):
-        paths_l = os.listdir(self.path_dir)
-        return [path.split(".joblib")[0] for path in paths_l]
+    def _remove_confirmed(self, model_id):
+        os.remove(
+            MetaRegressorPaths(self.base_path).model(
+                self.dataset_type, self.model_type, model_id
+            )
+        )
 
-    def _remove_confirmed(self, objective_function):
-        path = self._generate_path(objective_function.__name__)
-        os.remove(path)
-
-    def remove(self, objective_function, always_confirm=False):
+    def remove(self, model_id, always_confirm=False):
         if always_confirm:
-            self._remove_confirmed(objective_function)
+            self._remove_confirmed(model_id)
         else:
             question = "Remove pretrained meta regressor?"
             if query_yes_no(question):
-                self._remove_confirmed(objective_function)
+                self._remove_confirmed(model_id)
 
     def fit(self, X_meta, y_meta, drop_duplicates=True):
         if drop_duplicates:

@@ -8,21 +8,27 @@ from typing import Tuple
 import pandas as pd
 
 
-from .paths import Paths
 from .search_data import SearchData
 from .dataset_features import DatasetFeatures
 from .paths import SyntheticMetaDataPaths
 
 
 class BaseMetaData:
-    def __init__(self, path):
-        self.path = Paths(path)
-
+    def __init__(self, base_path: str):
+        self.base_path = base_path
         self.dataset_feature_generator = None
 
     def collect(self, X, y, model_id, dataset_id):
-        search_data = SearchData(model_id, dataset_id)
-        dataset_features = DatasetFeatures(model_id, dataset_id)
+        path_d = {
+            "dataset_type": self.dataset_type,
+            "model_type": self.model_type,
+            "model_id": model_id,
+            "dataset_id": dataset_id,
+            "base_path": self.base_path,
+        }
+
+        search_data = SearchData(**path_d)
+        dataset_features = DatasetFeatures(**path_d)
 
         ref_scores = self.dataset_feature_generator.create(X, y)
         dataset_features.dump(ref_scores)
@@ -61,9 +67,19 @@ class BaseMetaData:
 
     def get_meta_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
         meta_data_train_l = []
-        for dataset_id in SyntheticMetaDataPaths.dataset_ids(model_id):
-            search_data_c = SearchData(model_id, dataset_id)
-            dataset_features_c = DatasetFeatures(model_id, dataset_id)
+        for dataset_id in SyntheticMetaDataPaths(self.base_path).dataset_ids(
+            self.dataset_type, self.model_type, model_id
+        ):
+            path_d = {
+                "dataset_type": self.dataset_type,
+                "model_type": self.model_type,
+                "model_id": model_id,
+                "dataset_id": dataset_id,
+                "base_path": self.base_path,
+            }
+
+            search_data_c = SearchData(**path_d)
+            dataset_features_c = DatasetFeatures(**path_d)
 
             dataset_features = dataset_features_c.load()
             search_data = search_data_c.load()
