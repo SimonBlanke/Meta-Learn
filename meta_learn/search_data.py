@@ -11,8 +11,17 @@ from .paths import SyntheticMetaDataPaths
 
 
 class SearchData:
-    def __init__(self, model_id: str, dataset_id: str) -> None:
-        search_data_path = SyntheticMetaDataPaths.search_data(model_id, dataset_id)
+    def __init__(
+        self,
+        dataset_type: str,
+        model_type: str,
+        model_id: str,
+        dataset_id: str,
+        base_path: str = None,
+    ) -> None:
+        search_data_path = SyntheticMetaDataPaths(base_path).search_data(
+            dataset_type, model_type, model_id, dataset_id
+        )
         self.collector = SearchDataCollector(search_data_path)
 
     def load(self) -> pd.core.frame.DataFrame:

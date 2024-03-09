@@ -11,9 +11,16 @@ from .paths import SyntheticMetaDataPaths
 
 
 class DatasetFeatures:
-    def __init__(self, model_id: str, dataset_id: str) -> None:
-        self.dataset_features_path = SyntheticMetaDataPaths.dataset_features(
-            model_id, dataset_id
+    def __init__(
+        self,
+        dataset_type: str,
+        model_type: str,
+        model_id: str,
+        dataset_id: str,
+        base_path: str = None,
+    ) -> None:
+        self.dataset_features_path = SyntheticMetaDataPaths(base_path).dataset_features(
+            dataset_type, model_type, model_id, dataset_id
         )
 
     def load(self) -> pd.core.frame.DataFrame:
