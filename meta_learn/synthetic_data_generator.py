@@ -2,18 +2,35 @@
 # Email: simon.blanke@yahoo.com
 # License: MIT License
 
-import pandas as pd
-from typing import List
-
+import shutil
 
 from hyperactive import Hyperactive
 
+from .utils import query_yes_no
 from .paths import SyntheticMetaDataPaths
 
 
 class BaseSyntheticDataGenerator:
-    def __init__(self) -> None:
-        pass
+    def __init__(self, base_path) -> None:
+        self.paths = SyntheticMetaDataPaths(base_path)
+
+    def remove(self, model_id=None, dataset_id=None, always_confirm=False):
+        if always_confirm:
+            self._remove_confirmed(model_id, dataset_id)
+        else:
+            question = "Remove synthetic meta data?"
+            if query_yes_no(question):
+                self._remove_confirmed(model_id, dataset_id)
+
+    def _remove_confirmed(self, model_id, dataset_id):
+        if model_id and dataset_id:
+            shutil.rmtree(self.paths.dataset(model_id, dataset_id))
+        elif model_id:
+            shutil.rmtree(self.paths.model(model_id))
+        elif not model_id and not dataset_id:
+            shutil.rmtree(self.paths.synthetic_meta_data_base_path)
+        else:
+            raise ValueError
 
     def collect(self, objective_function, search_space, model_id, n_iter, n_jobs=1):
         for dataset_id, dataset_para in self.dataset_dict.items():
