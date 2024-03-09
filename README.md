@@ -11,6 +11,15 @@ Meta-Learn
 Collect and use meta-data of machine learning datasets to reduce search time for hyperparameter. Meta-Learn collects data about model- and dataset-properties to train a regressor (the score of the model being the target).
 
 
+## Definitions
+
+### Meta-Learning
+
+### Meta-Regressor
+
+### Meta-Data
+
+
 ## Installation
 ```console
 pip install meta-learn
