@@ -9,12 +9,13 @@ from typing import Tuple
 
 import pandas as pd
 
-from search_data_collector import SearchDataCollector
 
 from .paths import Paths
+from .search_data import SearchData
+from .dataset_features import DatasetFeatures
 
 
-class BasesMetaData:
+class BaseMetaData:
     def __init__(self, path):
         self.path = Paths(path)
 
@@ -31,22 +32,11 @@ class BasesMetaData:
             raise ValueError
 
     def collect(self, X, y, model_id, dataset_id):
-        print("\n collect")
-
-        self.path.create_dataset_dir(model_id, dataset_id)
-
-        self.dataset_dir = self.path.get_dataset_dir(model_id, dataset_id)
-
-        search_data_path = os.path.join(self.dataset_dir, "search_data.csv")
-        self.collector = SearchDataCollector(search_data_path)
-        self.dataset_features_path = os.path.join(
-            self.dataset_dir, "dataset_features.json"
-        )
+        self.search_data = SearchData(model_id, dataset_id)
+        self.dataset_features = DatasetFeatures(model_id, dataset_id)
 
         ref_scores = self.dataset_feature_generator.create(X, y)
-
-        with open(self.dataset_features_path, "w") as f:
-            json.dump(ref_scores, f)
+        self.dataset_features.dump(ref_scores)
 
         def decorator(model):
             def wrapper(access):
@@ -60,7 +50,7 @@ class BasesMetaData:
                 else:
                     parameter["score"] = result
 
-                self.collector.append(parameter)
+                self.search_data.append(parameter)
 
                 return result
 
