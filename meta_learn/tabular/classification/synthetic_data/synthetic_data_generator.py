@@ -5,15 +5,16 @@
 from sklearn.datasets import make_classification
 
 from ....synthetic_data_generator import BaseSyntheticDataGenerator
-from ..meta_learn import MetaLearn
+from ..meta_data import MetaData
 from .synthetic_data_parameters import dataset_dict
+from ..model_and_dataset_type import ModelAndDatasetType
 
 
-class SyntheticDataGenerator(BaseSyntheticDataGenerator):
-    def __init__(self, base_path=".") -> None:
+class SyntheticDataGenerator(BaseSyntheticDataGenerator, ModelAndDatasetType):
+    def __init__(self, base_path=None) -> None:
         super().__init__(base_path)
 
-        self.meta_learn = MetaLearn(base_path)
+        self.meta_data = MetaData(self.path_dir)
         self.dataset_dict = dataset_dict
 
     def generate(self, dataset_para):
