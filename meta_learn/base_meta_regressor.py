@@ -10,9 +10,6 @@ from .utils import query_yes_no
 
 
 class BaseMetaRegressor:
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    base_path = os.path.join(dir_path, "pretrained_meta_regressors")
-
     def __init__(self, regressor):
         self.regressor = regressor
 
