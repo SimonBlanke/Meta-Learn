@@ -4,12 +4,15 @@ Meta-Learn
 
 <br>
 
-<h2 align="center">Collection and utilization of meta data from machine learning models and problems.</h3>
+<h2 align="center">Metalearning for Hyperparameter Optimization</h3>
 
 <br>
 
-Collect and use meta-data of machine learning datasets to reduce search time for hyperparameter. Meta-Learn collects data about model- and dataset-properties to train a regressor (the score of the model being the target).
 
+This package implements a type of Meta-Learning, which aims at optimizing the hyperparameters of a given model, based on previous model evaluations. This approach is described in chapter 6 of the book "Metalearning"[[1]](#1).
+
+
+<br>
 
 ## Definitions
 
@@ -20,7 +23,24 @@ Collect and use meta-data of machine learning datasets to reduce search time for
 ### Meta-Data
 
 
+
+<br>
+
 ## Installation
 ```console
 pip install meta-learn
 ```
+
+
+<br>
+
+## References
+
+<a id="1">[1]</a> 
+Pavel Brazdil, Jan N. van Rijn, Carlos Soares, Joaquin Vanschoren.
+*Metalearning.
+Applications to Automated Machine Learning and Data Mining.*
+Second Edition.
+Springer, 2022.
+
+
