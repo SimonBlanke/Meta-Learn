@@ -52,7 +52,7 @@ class BaseMetaData:
 
         return decorator
 
-    def get_meta_data_X(self, search_space, X, y):
+    def get_inference_data(self, search_space, X, y):
         keys, values = zip(*search_space.items())
         permutations_dicts = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
@@ -64,7 +64,7 @@ class BaseMetaData:
         print("create", len(all_parameters), "samples")
         return meta_data_test
 
-    def get_meta_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
+    def get_training_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
         meta_data_train_l = []
         for dataset_id in self.synth_data_path.dataset_ids(model_id):
             dataset_features = self.dataset_features_m.load(model_id, dataset_id)

@@ -11,11 +11,13 @@ from sklearn.datasets import load_breast_cancer
 
 
 from meta_learn.tabular.classification.synthetic_data import SyntheticDataGenerator
-from meta_learn.tabular.classification.meta_learn import MetaLearn
+from meta_learn.tabular.classification.meta_data import MetaData
 from meta_learn.tabular.classification import MetaRegressor
 
 
-dir_path = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+dir_path = os.path.abspath(
+    os.path.join(os.path.dirname(os.path.realpath(__file__)), "_tmp_test_data")
+)
 
 data = load_breast_cancer()
 X_inference, y_inference = data.data, data.target
@@ -72,23 +74,23 @@ dataset_dict = {
 def test_integration():
     model_id = "test_dtc"
 
-    synth_data = SyntheticDataGenerator(dir_path)
+    synth_data = SyntheticDataGenerator(base_path=dir_path)
     synth_data.dataset_dict = dataset_dict
     synth_data.collect(dtc_function, search_space, model_id, n_iter=10)
 
-    meta_learn = MetaLearn(dir_path)
-    meta_X, meta_y = meta_learn.get_meta_data(model_id)
-    meta_data_X_test = meta_learn.get_meta_data_X(
+    meta_data = MetaData(base_path=dir_path)
+    meta_X, meta_y = meta_data.get_training_data(model_id)
+    meta_data_X_test = meta_data.get_inference_data(
         search_space, X_inference, y_inference
     )
 
-    gbr = MetaRegressor()
+    gbr = MetaRegressor(base_path=dir_path)
     gbr.fit(meta_X, meta_y)
-    gbr.dump(dtc_function)
+    gbr.dump(model_id)
 
-    gbr_load = MetaRegressor()
-    gbr_load.load(dtc_function)
+    gbr_load = MetaRegressor(base_path=dir_path)
+    gbr_load.load(model_id)
     gbr_load.predict(meta_data_X_test)
-    gbr_load.remove(dtc_function, always_confirm=True)
+    # gbr_load.remove(model_id, always_confirm=True)
 
-    meta_learn.remove()
+    # synth_data.remove(always_confirm=True)

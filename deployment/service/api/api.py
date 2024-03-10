@@ -39,7 +39,7 @@ def predict(inference_data: InferenceDTO):
     x = inference_data.x
     y = inference_data.y
 
-    x_meta_data = MetaLearn.get_meta_data_X(search_space, x, y)
+    x_meta_data = MetaLearn.get_inference_data(search_space, x, y)
     prediction = app.model.predict(x_meta_data)
 
     return PredictionDTO(approx_scores=prediction)

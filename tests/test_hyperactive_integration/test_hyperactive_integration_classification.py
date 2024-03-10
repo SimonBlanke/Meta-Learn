@@ -78,8 +78,8 @@ def test_hyperactive_integration_classification():
     synth_data.collect(dtc_function, search_space, model_id, n_iter=10)
 
     meta_learn = MetaData(base_path=dir_path)
-    meta_X, meta_y = meta_learn.get_meta_data(model_id)
-    meta_data_X_test = meta_learn.get_meta_data_X(search_space, X_inf, y_inf)
+    meta_X, meta_y = meta_learn.get_training_data(model_id)
+    meta_data_X_test = meta_learn.get_inference_data(search_space, X_inf, y_inf)
 
     gbr = MetaRegressor(base_path=dir_path)
     gbr.fit(meta_X, meta_y)
