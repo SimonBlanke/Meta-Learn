@@ -18,20 +18,19 @@ class BaseMetaData:
         self.base_path = base_path
         self.dataset_feature_generator = None
 
-    def collect(self, X, y, model_id, dataset_id):
         path_d = {
             "dataset_type": self.dataset_type,
             "model_type": self.model_type,
-            "model_id": model_id,
-            "dataset_id": dataset_id,
             "base_path": self.base_path,
         }
 
-        search_data = SearchData(**path_d)
-        dataset_features = DatasetFeatures(**path_d)
+        self.synth_data_path = SyntheticMetaDataPaths(**path_d)
+        self.search_data_m = SearchData(**path_d)
+        self.dataset_features_m = DatasetFeatures(**path_d)
 
+    def collect(self, X, y, model_id, dataset_id):
         ref_scores = self.dataset_feature_generator.create(X, y)
-        dataset_features.dump(ref_scores)
+        self.dataset_features_m.dump(ref_scores, model_id, dataset_id)
 
         def decorator(model):
             def wrapper(access):
@@ -45,7 +44,7 @@ class BaseMetaData:
                 else:
                     parameter["score"] = result
 
-                search_data.append(parameter)
+                self.search_data_m.append(parameter, model_id, dataset_id)
 
                 return result
 
@@ -67,22 +66,9 @@ class BaseMetaData:
 
     def get_meta_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
         meta_data_train_l = []
-        for dataset_id in SyntheticMetaDataPaths(self.base_path).dataset_ids(
-            self.dataset_type, self.model_type, model_id
-        ):
-            path_d = {
-                "dataset_type": self.dataset_type,
-                "model_type": self.model_type,
-                "model_id": model_id,
-                "dataset_id": dataset_id,
-                "base_path": self.base_path,
-            }
-
-            search_data_c = SearchData(**path_d)
-            dataset_features_c = DatasetFeatures(**path_d)
-
-            dataset_features = dataset_features_c.load()
-            search_data = search_data_c.load()
+        for dataset_id in self.synth_data_path.dataset_ids(model_id):
+            dataset_features = self.dataset_features_m.load(model_id, dataset_id)
+            search_data = self.search_data_m.load(model_id, dataset_id)
 
             meta_data_train = search_data.assign(**dataset_features)
             meta_data_train_l.append(meta_data_train)

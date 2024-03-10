@@ -14,7 +14,7 @@ class SyntheticDataGenerator(BaseSyntheticDataGenerator, ModelAndDatasetType):
     def __init__(self, base_path=None) -> None:
         super().__init__(base_path)
 
-        self.meta_data = MetaData(self.path_dir)
+        self.meta_data = MetaData(self.base_path)
         self.dataset_dict = dataset_dict
 
     def generate(self, dataset_para):

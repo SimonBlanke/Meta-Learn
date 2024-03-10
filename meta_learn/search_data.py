@@ -15,17 +15,16 @@ class SearchData:
         self,
         dataset_type: str,
         model_type: str,
-        model_id: str,
-        dataset_id: str,
         base_path: str = None,
     ) -> None:
-        search_data_path = SyntheticMetaDataPaths(base_path).search_data(
-            dataset_type, model_type, model_id, dataset_id
+        self.synth_data_path = SyntheticMetaDataPaths(
+            dataset_type, model_type, base_path
         )
-        self.collector = SearchDataCollector(search_data_path)
 
-    def load(self) -> pd.core.frame.DataFrame:
-        return self.collector.load()
+    def load(self, model_id, dataset_id) -> pd.core.frame.DataFrame:
+        path2csv = self.synth_data_path.search_data(model_id, dataset_id)
+        return SearchDataCollector(path2csv).load()
 
-    def append(self, search_data: dict):
-        self.collector.append(search_data)
+    def append(self, search_data: dict, model_id, dataset_id):
+        path2csv = self.synth_data_path.search_data(model_id, dataset_id)
+        SearchDataCollector(path2csv).append(search_data)

@@ -73,15 +73,15 @@ dataset_dict = {
 def test_hyperactive_integration_classification():
     model_id = "test_dtc"
 
-    synth_data = SyntheticDataGenerator(dir_path)
+    synth_data = SyntheticDataGenerator(base_path=dir_path)
     synth_data.dataset_dict = dataset_dict
     synth_data.collect(dtc_function, search_space, model_id, n_iter=10)
 
-    meta_learn = MetaLearn(dir_path)
+    meta_learn = MetaData(base_path=dir_path)
     meta_X, meta_y = meta_learn.get_meta_data(model_id)
     meta_data_X_test = meta_learn.get_meta_data_X(search_space, X_inf, y_inf)
 
-    gbr = MetaRegressor()
+    gbr = MetaRegressor(base_path=dir_path)
     gbr.fit(meta_X, meta_y)
 
     joblib.dump(gbr, "meta_regressor.joblib")
@@ -90,4 +90,4 @@ def test_hyperactive_integration_classification():
 
     gbr_.predict(meta_data_X_test)
 
-    meta_learn.remove()
+    synth_data.remove(always_confirm=True)

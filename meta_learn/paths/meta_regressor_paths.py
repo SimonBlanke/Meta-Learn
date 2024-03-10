@@ -8,21 +8,21 @@ from .paths import Paths
 
 
 class MetaRegressorPaths(Paths):
-    def __init__(self, base_path=None) -> None:
-        super().__init__(base_path)
+    def __init__(self, dataset_type, model_type, base_path=None) -> None:
+        super().__init__(dataset_type, model_type, base_path)
 
-        self.meta_regressors_base_path = os.path.join(self.pkg_data, "meta_regressors")
+        self.base_path = self._meta_regressors_base_path()
 
     @Paths.create_dir
-    def model_dir(self, dataset_type, model_type):
-        return os.path.join(self.meta_regressors_base_path, dataset_type, model_type)
+    def _meta_regressors_base_path(self):
+        return os.path.join(self.study_type_path, "meta_regressors")
 
-    def model(self, dataset_type, model_type, model_id):
-        return os.path.join(self.model_dir(dataset_type, model_type), model_id)
+    def model(self, model_id):
+        return os.path.join(self.base_path, model_id + ".joblib")
 
     @Paths.create_dir
     def dataset(self, model_id, dataset_id):
-        return os.path.join(self.meta_regressors_base_path, model_id, dataset_id)
+        return os.path.join(self.base_path, model_id, dataset_id)
 
     def get_objective_function_names(self):
         path_dir = os.path.abspath(

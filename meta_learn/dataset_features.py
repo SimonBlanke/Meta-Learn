@@ -15,18 +15,18 @@ class DatasetFeatures:
         self,
         dataset_type: str,
         model_type: str,
-        model_id: str,
-        dataset_id: str,
         base_path: str = None,
     ) -> None:
-        self.dataset_features_path = SyntheticMetaDataPaths(base_path).dataset_features(
-            dataset_type, model_type, model_id, dataset_id
+        self.synth_data_path = SyntheticMetaDataPaths(
+            dataset_type, model_type, base_path
         )
 
-    def load(self) -> pd.core.frame.DataFrame:
-        with open(self.dataset_features_path, "r") as f:
+    def load(self, model_id, dataset_id) -> pd.core.frame.DataFrame:
+        path2csv = self.synth_data_path.dataset_features(model_id, dataset_id)
+        with open(path2csv, "r") as f:
             return json.load(f)
 
-    def dump(self, dataset_features: dict):
-        with open(self.dataset_features_path, "w") as f:
+    def dump(self, dataset_features: dict, model_id, dataset_id):
+        path2csv = self.synth_data_path.dataset_features(model_id, dataset_id)
+        with open(path2csv, "w") as f:
             json.dump(dataset_features, f)

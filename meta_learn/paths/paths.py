@@ -12,10 +12,13 @@ class Paths:
 
     package_data: str = "package_data"
 
-    def __init__(self, base_path: str) -> None:
+    def __init__(self, dataset_type, model_type, base_path) -> None:
         if base_path:
             self.base_path = base_path
-        self.pkg_data: str = os.path.join(self.base_path, self.package_data)
+        pkg_data: str = os.path.join(self.base_path, self.package_data)
+        self.study_type_path: str = self._study_type_path(
+            pkg_data, dataset_type, model_type
+        )
 
     @staticmethod
     def create_dir(method):
@@ -26,3 +29,7 @@ class Paths:
             return path
 
         return wrapper
+
+    @create_dir
+    def _study_type_path(self, pkg_data_path, dataset_type, model_type):
+        return os.path.join(pkg_data_path, dataset_type, model_type)

@@ -12,7 +12,12 @@ from .paths import SyntheticMetaDataPaths
 
 class BaseSyntheticDataGenerator:
     def __init__(self, base_path) -> None:
-        self.paths = SyntheticMetaDataPaths(base_path)
+        self.base_path = base_path
+        self.synth_meta_data_paths = SyntheticMetaDataPaths(
+            self.dataset_type,
+            self.model_type,
+            base_path,
+        )
 
     def remove(self, model_id=None, dataset_id=None, always_confirm=False):
         if always_confirm:
@@ -24,11 +29,11 @@ class BaseSyntheticDataGenerator:
 
     def _remove_confirmed(self, model_id, dataset_id):
         if model_id and dataset_id:
-            shutil.rmtree(self.paths.dataset(model_id, dataset_id))
+            shutil.rmtree(self.synth_meta_data_paths.dataset(model_id, dataset_id))
         elif model_id:
-            shutil.rmtree(self.paths.model(model_id))
+            shutil.rmtree(self.synth_meta_data_paths.model(model_id))
         elif not model_id and not dataset_id:
-            shutil.rmtree(self.paths.synthetic_meta_data_base_path)
+            shutil.rmtree(self.synth_meta_data_paths.base_path)
         else:
             raise ValueError
 

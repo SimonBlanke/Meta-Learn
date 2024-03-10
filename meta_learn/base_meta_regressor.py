@@ -13,7 +13,10 @@ from .paths import MetaRegressorPaths
 class BaseMetaRegressor:
     def __init__(self, regressor, base_path):
         self.regressor = regressor
-        self.base_path = base_path
+
+        self.meta_reg_paths = MetaRegressorPaths(
+            self.dataset_type, self.model_type, base_path
+        )
 
         if regressor == "default":
             self.m_reg = GradientBoostingRegressor()
@@ -27,24 +30,14 @@ class BaseMetaRegressor:
     def dump(self, model_id):
         dump(
             self.m_reg,
-            MetaRegressorPaths(self.base_path).model(
-                self.dataset_type, self.model_type, model_id
-            ),
+            self.meta_reg_paths.model(model_id),
         )
 
     def load(self, model_id):
-        self.m_reg = load(
-            MetaRegressorPaths(self.base_path).model(
-                self.dataset_type, self.model_type, model_id
-            )
-        )
+        self.m_reg = load(self.meta_reg_paths.model(model_id))
 
     def _remove_confirmed(self, model_id):
-        os.remove(
-            MetaRegressorPaths(self.base_path).model(
-                self.dataset_type, self.model_type, model_id
-            )
-        )
+        os.remove(self.meta_reg_paths.model(model_id))
 
     def remove(self, model_id, always_confirm=False):
         if always_confirm:
