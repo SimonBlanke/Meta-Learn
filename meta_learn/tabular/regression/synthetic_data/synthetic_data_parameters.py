@@ -21,4 +21,16 @@ dataset_dict = {
         "n_informative": 5,
         "noise": 0.08,
     },
+    "test_dataset_3": {
+        "n_samples": 3000,
+        "n_features": 14,
+        "n_informative": 5,
+        "noise": 0.1,
+    },
+    "test_dataset_4": {
+        "n_samples": 5000,
+        "n_features": 14,
+        "n_informative": 3,
+        "noise": 0.07,
+    },
 }
