@@ -38,6 +38,7 @@ MANIFEST
 *.lock~
 *.db
 *___.py
+**/_dev_scripts
 
 # Installer logs
 pip-log.txt
