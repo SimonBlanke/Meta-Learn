@@ -3,5 +3,7 @@
 # License: MIT License
 
 
-__version__ = "0.3.0"
+import importlib.metadata
+
+__version__ = importlib.metadata.version("meta-learn")
 __license__ = "MIT"
