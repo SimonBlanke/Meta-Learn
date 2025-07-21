@@ -14,6 +14,20 @@ from .paths import SyntheticMetaDataPaths
 
 
 class BaseMetaData:
+    """Base class for managing meta-data collection and retrieval in meta-learning.
+
+    This class provides core functionality for collecting dataset features and search
+    data during hyperparameter optimization experiments. It serves as a foundation
+    for specific meta-data implementations for different dataset and model types.
+
+    Attributes:
+        base_path (str): Root directory for storing meta-data files
+        dataset_feature_generator: Generator instance for extracting dataset features
+        synth_data_path (SyntheticMetaDataPaths): Path manager for synthetic data
+        search_data_m (SearchData): Manager for search/optimization data
+        dataset_features_m (DatasetFeatures): Manager for dataset feature data
+    """
+
     def __init__(self, base_path: str):
         self.base_path = base_path
         self.dataset_feature_generator = None
@@ -29,6 +43,22 @@ class BaseMetaData:
         self.dataset_features_m = DatasetFeatures(**path_d)
 
     def collect(self, X, y, model_id, dataset_id):
+        """Create a decorator for collecting meta-data during model evaluation.
+
+        This method generates dataset features and returns a decorator that wraps
+        model evaluation functions to automatically collect performance data and
+        hyperparameters during optimization.
+
+        Args:
+            X: Feature matrix for the dataset
+            y: Target values for the dataset
+            model_id (str): Unique identifier for the model type
+            dataset_id (str): Unique identifier for the dataset
+
+        Returns:
+            function: Decorator function that wraps model evaluation to collect meta-data
+        """
+
         ref_scores = self.dataset_feature_generator.create(X, y)
         self.dataset_features_m.dump(ref_scores, model_id, dataset_id)
 
@@ -53,6 +83,22 @@ class BaseMetaData:
         return decorator
 
     def get_inference_data(self, search_space, X, y):
+        """Generate inference data for meta-model predictions.
+
+        Creates a comprehensive dataset containing all possible hyperparameter
+        combinations from the search space, augmented with dataset features.
+        This data is used for meta-model inference to predict performance.
+
+        Args:
+            search_space (dict): Dictionary mapping hyperparameter names to value ranges
+            X: Feature matrix for the target dataset
+            y: Target values for the target dataset
+
+        Returns:
+            pd.DataFrame: DataFrame containing all hyperparameter combinations
+                         with dataset features for meta-model inference
+        """
+
         keys, values = zip(*search_space.items())
         permutations_dicts = [dict(zip(keys, v)) for v in itertools.product(*values)]
 
@@ -65,6 +111,21 @@ class BaseMetaData:
         return meta_data_test
 
     def get_training_data(self, model_id: str) -> Tuple[pd.core.frame.DataFrame]:
+        """Load and prepare training data for meta-model fitting.
+
+        Aggregates historical search data and dataset features across all datasets
+        for a specific model type to create training data for the meta-regressor.
+
+        Args:
+            model_id (str): Unique identifier for the model type
+
+        Returns:
+            tuple: (meta_data_X, meta_data_y) where:
+                - meta_data_X (pd.DataFrame): Features including hyperparameters
+                  and dataset characteristics
+                - meta_data_y (pd.Series): Target scores from evaluations
+        """
+
         meta_data_train_l = []
         for dataset_id in self.synth_data_path.dataset_ids(model_id):
             dataset_features = self.dataset_features_m.load(model_id, dataset_id)
