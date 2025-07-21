@@ -4,5 +4,6 @@
 
 
 class ModelAndDatasetType:
+
     dataset_type = "tabular"
     model_type = "regression"
