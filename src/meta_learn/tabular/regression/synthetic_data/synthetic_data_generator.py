@@ -4,7 +4,7 @@
 
 from sklearn.datasets import make_regression
 
-from ....synthetic_data_generator import BaseSyntheticDataGenerator
+from .synthetic_data_generator import BaseSyntheticDataGenerator
 from ..meta_data import MetaData
 from .synthetic_data_parameters import dataset_dict
 from ..model_and_dataset_type import ModelAndDatasetType
