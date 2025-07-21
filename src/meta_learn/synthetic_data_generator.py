@@ -11,6 +11,17 @@ from .paths import SyntheticMetaDataPaths
 
 
 class BaseSyntheticDataGenerator:
+    """Base class for generating synthetic training data for meta-learning.
+
+    This class provides functionality to generate synthetic datasets and
+    collect performance data across different hyperparameter configurations,
+    building a comprehensive meta-dataset for training meta-models.
+
+    Attributes:
+        base_path (str): Root directory for data storage
+        synth_meta_data_paths (SyntheticMetaDataPaths): Path manager
+    """
+
     def __init__(self, base_path) -> None:
         self.base_path = base_path
         self.synth_meta_data_paths = SyntheticMetaDataPaths(
@@ -20,6 +31,17 @@ class BaseSyntheticDataGenerator:
         )
 
     def remove(self, model_id=None, dataset_id=None, always_confirm=False):
+        """Remove synthetic meta-data with optional confirmation.
+
+        Allows selective removal of data at different granularity levels:
+        specific dataset, all datasets for a model, or all data.
+
+        Args:
+            model_id (str, optional): Model identifier to remove
+            dataset_id (str, optional): Dataset identifier to remove
+            always_confirm (bool): If True, skip confirmation prompt
+        """
+
         if always_confirm:
             self._remove_confirmed(model_id, dataset_id)
         else:
@@ -38,6 +60,19 @@ class BaseSyntheticDataGenerator:
             raise ValueError
 
     def collect(self, objective_function, search_space, model_id, n_iter, n_jobs=1):
+        """Collect meta-data by running hyperparameter optimization on synthetic datasets.
+
+        Iterates through predefined synthetic datasets, running hyperparameter
+        optimization for each and collecting the results as meta-training data.
+
+        Args:
+            objective_function: Function to optimize (takes optimizer access object)
+            search_space (dict): Hyperparameter search space definition
+            model_id (str): Unique identifier for the model type
+            n_iter (int): Number of optimization iterations per dataset
+            n_jobs (int): Number of parallel jobs for optimization
+        """
+
         for dataset_id, dataset_para in self.dataset_dict.items():
             X, y = self.generate(dataset_para)
 
