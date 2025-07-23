@@ -11,6 +11,16 @@ from ..model_and_dataset_type import ModelAndDatasetType
 
 
 class SyntheticDataGenerator(BaseSyntheticDataGenerator, ModelAndDatasetType):
+    """Synthetic data generator for tabular classification.
+
+    Generates synthetic classification datasets with varying characteristics
+    to create diverse meta-training data for classification tasks.
+
+    Attributes:
+        meta_data (MetaData): Meta-data manager instance
+        dataset_dict (dict): Configuration for synthetic datasets
+    """
+
     def __init__(self, base_path=None) -> None:
         super().__init__(base_path)
 
@@ -18,4 +28,13 @@ class SyntheticDataGenerator(BaseSyntheticDataGenerator, ModelAndDatasetType):
         self.dataset_dict = dataset_dict
 
     def generate(self, dataset_para):
+        """Generate a synthetic classification dataset.
+
+        Args:
+            dataset_para (dict): Parameters for dataset generation
+
+        Returns:
+            tuple: (X, y) synthetic dataset
+        """
+
         return make_classification(**dataset_para)
